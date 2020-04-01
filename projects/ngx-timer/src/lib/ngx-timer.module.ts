@@ -1,12 +1,8 @@
-import { NgModule } from '@angular/core';
-import { NgxTimerComponent } from './ngx-timer.component';
-
-
+import { NgModule } from "@angular/core";
 
 @NgModule({
-  declarations: [NgxTimerComponent],
-  imports: [
-  ],
-  exports: [NgxTimerComponent]
+  declarations: [],
+  imports: [],
+  exports: []
 })
-export class NgxTimerModule { }
+export class NgxTimerModule {}
