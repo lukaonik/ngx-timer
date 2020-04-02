@@ -11,12 +11,24 @@ export class NgxTimerCoreService {
 
   _tick$ = new Subject<DiffValue>();
 
+  _start$ = new Subject();
+
+  _stop$ = new Subject();
+
   endTime: Date;
 
   private sub: Subscription = new Subscription();
 
   get tick$() {
     return this._tick$.asObservable();
+  }
+
+  get start$() {
+    return this._start$.asObservable();
+  }
+
+  get stop$() {
+    return this._stop$.asObservable();
   }
 
   get options() {
@@ -42,6 +54,8 @@ export class NgxTimerCoreService {
   private tryValidate(option: NgxTimerOptions) {}
 
   start() {
+    this._start$.next();
+
     this.sub.add(
       timer(0, TICK_UPDATE).subscribe(() => {
         const diff = this.adapter.compute(this.endTime, new Date());
@@ -59,6 +73,7 @@ export class NgxTimerCoreService {
   }
 
   stop() {
+    this._stop$.next();
     this.sub.unsubscribe();
   }
 

@@ -6,10 +6,13 @@ import {
   TemplateRef,
   OnDestroy,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Output
 } from "@angular/core";
 import { NgxTimerCoreService } from "../ngx-timer-core.service";
 import { DIRECTION_TYPE, DiffValue } from "../ngx-timer-options";
+import { Subscription } from "rxjs";
+import { EventEmitter } from "@angular/core";
 
 @Component({
   selector: "ngx-timer",
@@ -26,6 +29,14 @@ export class NgxTimerComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input("renderTemplate")
   renderTemplate: TemplateRef<HTMLElement>;
+
+  sub: Subscription = new Subscription();
+
+  @Output("onStart")
+  start = new EventEmitter();
+
+  @Output("onStop")
+  stop = new EventEmitter();
 
   renderContext: {
     $implicit: DiffValue;
@@ -55,20 +66,35 @@ export class NgxTimerComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    this.ngxTimerCoreService.tick$.subscribe(diff => {
-      this.renderContext.$implicit = { ...diff };
-      this.cf.markForCheck();
-    });
-  }
+    this.sub.add(
+      this.ngxTimerCoreService.start$.subscribe(() => {
+        this.start.emit();
+      })
+    );
 
-  ngOnChanges() {
+    this.sub.add(
+      this.ngxTimerCoreService.stop$.subscribe(() => {
+        this.stop.emit();
+      })
+    );
+
+    this.sub.add(
+      this.ngxTimerCoreService.tick$.subscribe(diff => {
+        this.renderContext.$implicit = { ...diff };
+        this.cf.markForCheck();
+      })
+    );
+
     this.ngxTimerCoreService.restart({
       autostart: this.autostart || true,
       interval: this.interval || null
     });
   }
 
+  ngOnChanges() {}
+
   ngOnDestroy() {
     this.ngxTimerCoreService.destroy();
+    this.sub.unsubscribe();
   }
 }
