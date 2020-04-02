@@ -1,0 +1,5 @@
+<ngx-timer [interval]="30000" [renderTemplate]="timerTemp"></ngx-timer>
+<ng-template #timerTemp let-time>
+  {{ time.minute?.toString().padStart(2) }} :
+  {{ time.second?.toString().padStart(2, 0) }}
+</ng-template>
