@@ -5,7 +5,8 @@ import {
   Inject,
   TemplateRef,
   OnDestroy,
-  OnChanges
+  OnChanges,
+  ChangeDetectorRef
 } from "@angular/core";
 import { NgxTimerCoreService } from "../ngx-timer-core.service";
 import { DIRECTION_TYPE, DiffValue } from "../ngx-timer-options";
@@ -48,11 +49,15 @@ export class NgxTimerComponent implements OnInit, OnDestroy, OnChanges {
     }
   };
 
-  constructor(private ngxTimerCoreService: NgxTimerCoreService) {}
+  constructor(
+    private ngxTimerCoreService: NgxTimerCoreService,
+    private cf: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.ngxTimerCoreService.tick$.subscribe(diff => {
       this.renderContext.$implicit = { ...diff };
+      this.cf.markForCheck();
     });
   }
 

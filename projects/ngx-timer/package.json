@@ -1,5 +1,6 @@
 {
-  "name": "ngx-timer",
+  "name": "ngx-timer-tonyjs",
+  "private": false,
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^9.0.7",
